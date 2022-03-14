@@ -12,9 +12,8 @@ export const RateContext = createContext({
 
 export const RateContextProvider:FC = ({children}) => {
     const [ratings, setRatings] = useState<Ratings>(() => {
-        const localRatingsJSON = localStorage.getItem('ratings') || "";
-        const localRatings = JSON.parse(localRatingsJSON);
-        return localRatings;
+        const localRatingsJSON = localStorage.getItem('ratings');
+        return localRatingsJSON ? JSON.parse(localRatingsJSON) : {};
     });
 
     const [recentRatings, setRecentRatings] = useState<Ratings>({});
