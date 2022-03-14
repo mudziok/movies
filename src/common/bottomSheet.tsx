@@ -17,7 +17,7 @@ export const BottomSheet:FC<BottomSheetProps> = ({isOpen, children, onBackground
         <>
         { isOpen &&
             <div 
-                className="fixed top-0 bottom-0 left-0 right-0 bg-opacity-60 bg-black flex flex-col justify-end items-center"
+                className="fixed top-0 bottom-0 left-0 right-0 bg-opacity-60 bg-black flex flex-col justify-end items-center z-10"
                 onClick={onClick}
                 ref={backgroundRef}
             >
