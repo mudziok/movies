@@ -17,16 +17,37 @@ export interface Actor {
     popularity: number,
 }
 
-export const requestMovies = async (query: string): Promise<Movie[]> => {
-    const resonse = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_TMDB}&query=${query}`);
-    const data = await resonse.json();
+export const requestQuery = async (query: string): Promise<Movie[]> => {
+    const response = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_TMDB}&query=${query}`);
+    if (response.status !== 200) return [];
 
-    return data.results as Movie[];
+    try {
+        const data = await response.json();
+        return data.results as Movie[];
+    } catch (error) {
+        return [];
+    }
+
 };
 
 export const requestCredits = async (movieId: number) => {
-    const resonse = await fetch(`https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${process.env.REACT_APP_TMDB}`);
-    const data = await resonse.json();
+    const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${process.env.REACT_APP_TMDB}`);
+    if (response.status !== 200) return [];
 
-    return data.cast as Actor[];
+    try {
+        const data = await response.json();
+        return data.cast as Actor[];
+    } catch (error) {
+        return []
+    }
+}
+
+export const requestMovies = async (movieIds: number[]) => {
+    const promises = movieIds.map(id => fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.REACT_APP_TMDB}`))
+    const responses = await Promise.all(promises);
+    const data = await Promise.all(responses.map(response => response.json()));
+
+    // mutate data to match Movie type
+    const movies = data.map(movie => ({...movie, genre_ids: [movie.genres[0].id]}))
+    return movies;
 }
